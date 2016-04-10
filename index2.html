@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id ="myCanvas" width="800" height="400" style="border:1px solid #111; border-radius:5px"></canvas>
+
+</body>
+
+<script type="text/javascript">
+	
+
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+
+var cvHeight=400;
+var cvWidth=800;
+var cw=10;
+
+var currentDirection="right";
+var snakeArray=initialSnakeCoordinates();
+var food = newFoodCoordinates();
+
+var s = makeNextMove();
+
+var isGameLive=true;
+
+
+// first create a snake of length 5 for start of the game
+
+function initialSnakeCoordinates()
+{
+	var initLength = 5;
+	var pos = [];
+	for(var i=0;i<initLength;i++)
+	{
+		pos.push({x:i,y:0});
+	}
+	return pos;
+}
+
+
+// paint each cell of the snake
+
+function paintCell(x,y)
+{
+	ctx.fillStyle="blue";
+	ctx.fillRect(x*cw,y*cw,cw,cw);
+	ctx.strokeStyle="white";
+	ctx.strokeRect(x*cw,y*cw,cw,cw);
+
+}
+
+
+
+function drawSnake()
+{
+	for (var i=snakeArray.length -1;i>=0;i--)
+	{
+		
+		paintCell(snakeArray[i].x,snakeArray[i].y)
+	}
+}
+
+
+function renderSnake()
+{
+	ctx.clearRect(0,0,myCanvas.width,myCanvas.height);
+	drawSnake();
+}
+
+
+function snakeHead(snakeArray)
+{
+	var pos = snakeArray.length - 1;
+	return snakeArray[pos];
+}
+
+
+var s=0;
+
+function makeNextMove()
+{
+	var head = snakeHead(snakeArray);
+	var newHead = snakeHead(snakeArray);
+
+	var currentLength = snakeArray.length;
+	var tempArray = snakeArray;
+
+
+	console.log(head);
+
+	if(currentDirection == "right")
+	{
+		
+		if(head.x>90)
+		{
+			newHead.x=0;
+			snakeArray.pop();
+			snakeArray.push({x:newHead.x+1,y:newHead.y});
+		}		
+		else
+			snakeArray.push({x: head.x + 1,y: head.y});
+
+		
+	}
+
+	else if(currentDirection == "left")
+	{
+		
+		if(head.x<0)
+		{
+			newHead.x = 90;
+
+
+			//snakeArray=[];
+			
+				snakeArray.pop();
+
+				snakeArray.push({x:newHead.x-10,y:newHead.y});	
+						
+				//newSnakeArray.push({x:})
+				
+				//console.log(i);	
+			
+
+		}
+
+		else
+		{
+
+			snakeArray.push({x:head.x-1,y:head.y});
+
+		}
+	}
+	else if(currentDirection == "up")
+	{
+		if(head.y<0)
+		{
+			newHead.x=40;
+			snakeArray.pop();
+			snakeArray.push({x:newHead.x,y:newHead.y-10});
+		}		
+		else
+			snakeArray.push({x:head.x,y:head.y-1});
+	}
+	else if (currentDirection == "down")
+	{
+		
+		if(head.y>40)
+		{
+			newHead.x=0;
+			snakeArray.pop();
+			snakeArray.push({x:newHead.x,y:newHead.y+10});
+		}		
+		else
+		snakeArray.push({x:head.x,y:head.y+1});
+	}
+
+	if(!eatFood(snakeArray))
+	{
+		snakeArray.splice(0,1);	
+	}
+	else
+	{
+		food = newFoodCoordinates();
+		s=s+1;
+		return s;
+	}
+	
+}
+
+document.onkeypress = function (event)
+{
+	if (event.charCode == '97')
+	{
+		currentDirection = "left";
+	}
+	else if (event.charCode=='100')
+	{
+		currentDirection="right";
+	}
+	else if (event.charCode=='115')
+	{
+		currentDirection="down";
+	}
+	else if (event.charCode=='119')
+	{
+		currentDirection="up";
+	}
+	else if(event.charCode=='112')	// p for pause
+	{
+		isGameLive=!isGameLive;
+	}
+}
+
+
+function newFoodCoordinates()
+{
+	var x=(Math.random()*cvHeight/2)+1;
+	var y=(Math.random()*cvWidth/2)	+1;
+
+	var roundTo10=function(number)
+	{
+		return Math.round(number/10)*10;
+	}
+
+	return {x:roundTo10(x),y:roundTo10(y)};
+}
+
+
+
+function renderFood()
+{
+	var x =food.x;
+	var y =food.y;
+	ctx.fillStyle = "red";
+	ctx.fillRect(x,y,cw,cw);	
+}
+
+
+function eatFood(snakeArray)
+{
+	var head = snakeHead(snakeArray);
+
+	var x=head.x;
+	var y=head.y;
+
+	if(x*cw ==food.x && y*cw==food.y)
+	{
+		return true;
+
+	}
+	else 
+		return false;
+}
+
+
+
+
+function scoreCard()
+{
+	
+	ctx.fillStyle = "black";
+	ctx.font="14px Arial";
+	ctx.fillText("Score :" + s,10,395);
+
+}
+
+
+
+function gameLoop()
+{
+	if(isGameLive)
+	{
+		renderSnake();
+		makeNextMove();
+		renderFood();
+		scoreCard();
+
+	}
+}
+
+
+
+setInterval(gameLoop,150);
+
+
+</script>
+
+</html>

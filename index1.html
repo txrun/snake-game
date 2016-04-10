@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id ="myCanvas" width="800" height="400" style="border:1px solid #111; border-radius:5px"></canvas>
+
+</body>
+
+<script type="text/javascript">
+	
+
+	function snakeCoordinates()
+	{
+		var length = 5; //Length of the snake
+		var result = []; //Empty array to start with
+		for(var i = 0; i < length; i++) {
+			// This will create a horizontal snake starting from the top left
+			result.push({x: i, y:0});
+		}
+		return result
+	}
+
+	//Lets first create a generic function to paint cells
+	function paint_cell(x, y)
+	{
+		ctx.fillStyle = "blue";
+		ctx.fillRect(x*cw, y*cw, cw, cw);
+		ctx.strokeStyle = "white";
+		ctx.strokeRect(x*cw, y*cw, cw, cw);
+	}
+
+	function drawSnake()
+	{	
+		for (var i = snake_array.length - 1; i >= 0; i--) 
+		{
+			snake_array[i];		
+			paint_cell(snake_array[i].x,snake_array[i].y);
+		
+		}
+	}
+
+	function snake_head(snake_array)
+	{
+		var las_pos=snake_array.length-1;
+		return snake_array[las_pos];
+	}
+
+
+	function renderSnake()
+	{
+		//clearCanvas
+		ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+		drawSnake();
+
+		
+	}
+
+	function makeNextMove() {
+		var head = snake_head(snake_array);
+		if(currentDirection == "right") {
+			snake_array.push({x: head.x + 1, y: head.y});
+		} 
+		else if(currentDirection == "down") {
+			snake_array.push({x: head.x, y: head.y + 1});
+		}
+		else if(currentDirection == "left")
+		{
+			snake_array.push({x: head.x-1, y: head.y})
+		}
+		else if (currentDirection == "up")
+		{
+			snake_array.push({x:head.x, y:head.y-1})
+		}
+		console.log(snake_array);
+		if(!eatFood(snake_array))
+
+			{
+				console.log("not eaten");
+				snake_array.splice(0,1);
+		
+			}
+			else
+			{
+				food = newFoodCoordinates();
+			}
+		
+	}
+
+	document.onkeypress = function(event) {
+		console.log(event);
+		if(event.charCode == '97') {
+			// a 
+			currentDirection = "left";
+		} else if(event.charCode == '100') {
+			// d
+			currentDirection = "right";
+		} else if(event.charCode == '119') {
+			// w
+			currentDirection = "up"
+		} else if(event.charCode == "115") {
+			// s
+			currentDirection = "down"
+		} else if(event.charCode == "112") {
+			isGameLive = !isGameLive;
+		}
+	}
+
+	function renderFood()
+	{
+			var x=food.x;
+			var y=food.y;
+			ctx.fillStyle = "red";
+			ctx.fillRect(x,y, cw, cw);
+						
+			
+	};
+  
+	function newFoodCoordinates()
+	{
+		var x = (Math.random() * cnvsWidth) + 1;
+		var y = (Math.random() * cnvsHeight) + 1;
+		var roundTo10 = function(number) {
+			return Math.round(number / 10) * 10
+		}
+		return {
+			x: roundTo10(x),
+			y: roundTo10(y)
+		}
+
+
+	}
+
+
+	function eatFood(snake_array)
+	{
+
+
+		var head = snake_head(snake_array);
+
+		var x=head.x;
+		var y=head.y;
+		if(x*cw == food.x && y*cw == food.y)
+		{
+			return true;
+		}
+		else return false;
+	}
+
+
+	function gameLoop() {
+		if(isGameLive) {
+			renderSnake();
+			renderFood();
+			makeNextMove();
+		}
+	}
+
+
+	var canvas = document.getElementById("myCanvas");
+	var ctx=canvas.getContext("2d");
+	var cw=10;
+
+	var cnvsWidth = 800;
+	var cnvsHeight = 400;
+
+	var currentDirection = "right"
+	var snake_array = snakeCoordinates();
+	var food = newFoodCoordinates();
+	console.log("food is ",food);
+	
+	var isGameLive = true;
+
+	setInterval(gameLoop, 150);	
+
+</script>
+</html>

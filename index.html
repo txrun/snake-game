@@ -1,0 +1,61 @@
+<<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+	<canvas id ="myCanvas" width="800" height="600" style="border:1px solid #111;border-radius:5px"></canvas>
+
+</body>
+
+	<script type="text/javascript">
+		var canvas= document.getElementById("myCanvas");
+		var ctx=canvas.getContext("2d");
+
+		function initialCoordinates()
+		{
+			var initLength=5;
+			var pos=[];
+			for (var i = 0;i<initLength - 1; i++) 
+			{
+				pos.push({x:i,y:0});
+
+			}
+			return pos;
+		}
+
+
+		var snakeArray = initialCoordinates();
+
+		function paintCell(x,y)
+		{
+			ctx.fillStyle="blue";
+			ctx.fillRect(x*cw,y*cw,cw,cw);
+			ctx.strokeStyle="white";
+			ctx.strokeRect(x*cw,y*cw,cw,cw);
+		}
+
+		function drawSnake()
+		{
+			for (var i = 0;i<snakeArray.length - 1; i++) 
+			{
+				paintCell(snakeArray[i].x,snakeArray[i].y);
+			}
+		}
+
+		function snakeHead(snakeArray)
+		{
+			var headPos = snakeArray.length-1;
+			return snakeArray[headPos];
+		}
+
+		function makeNextMove()
+		{
+			
+		}
+
+		
+	</script>
+
+</html>
