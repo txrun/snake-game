@@ -138,7 +138,7 @@ function makeNextMove()
 	{
 		if(head.y<0)
 		{
-			newHead.x=40;
+			newHead.y=40;
 			snakeArray.pop();
 			snakeArray.push({x:newHead.x,y:newHead.y-10});
 		}		
@@ -150,7 +150,7 @@ function makeNextMove()
 		
 		if(head.y>40)
 		{
-			newHead.x=0;
+			newHead.y=0;
 			snakeArray.pop();
 			snakeArray.push({x:newHead.x,y:newHead.y+10});
 		}		
