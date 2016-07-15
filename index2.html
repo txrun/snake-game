@@ -4,8 +4,7 @@
 	<title></title>
 </head>
 <body>
-	<canvas id ="myCanvas" width="800" height="400" style="border:1px solid #111; border-radius:5px"></canvas>
-
+	<canvas id ="myCanvas" width="800" height="400" style="border:1px solid #111; border-radius:5px"></canvas>	
 </body>
 
 <script type="text/javascript">
@@ -28,7 +27,7 @@ var isGameLive=true;
 
 
 // first create a snake of length 5 for start of the game
-
+    
 function initialSnakeCoordinates()
 {
 	var initLength = 5;
@@ -57,8 +56,7 @@ function paintCell(x,y)
 function drawSnake()
 {
 	for (var i=snakeArray.length -1;i>=0;i--)
-	{
-		
+	{		
 		paintCell(snakeArray[i].x,snakeArray[i].y)
 	}
 }
@@ -66,15 +64,15 @@ function drawSnake()
 
 function renderSnake()
 {
-	ctx.clearRect(0,0,myCanvas.width,myCanvas.height);
+	ctx.clearRect(0,0,canvas.width,canvas.height);
 	drawSnake();
 }
 
 
 function snakeHead(snakeArray)
 {
-	var pos = snakeArray.length - 1;
-	return snakeArray[pos];
+	var headPos = snakeArray.length - 1;
+	return snakeArray[headPos];
 }
 
 
@@ -89,76 +87,96 @@ function makeNextMove()
 	var tempArray = snakeArray;
 
 
-	console.log(head);
-
 	if(currentDirection == "right")
 	{
+		for (var i = 0; i < tempArray.length; i++) 
+		{	
+			if(head.x+1 == tempArray[i].x && head.y == tempArray[i].y)
+			{
+				isGameLive = false;
+				alert("Game Over!! \n Score :"+s);
+				console.log("collision!");
+			}
+		};
+	
 		
-		if(head.x>90)
+		if(head.x>79)
 		{
 			newHead.x=0;
-			snakeArray.pop();
 			snakeArray.push({x:newHead.x+1,y:newHead.y});
 		}		
 		else
-			snakeArray.push({x: head.x + 1,y: head.y});
-
-		
+			{
+				snakeArray.push({x: head.x + 1,y: head.y});
+			}
+			
 	}
 
 	else if(currentDirection == "left")
-	{
-		
+	{	
+		for (var i = 0; i < tempArray.length; i++) 
+		{	
+			if(head.x-1 == tempArray[i].x && head.y == tempArray[i].y)
+			{
+				isGameLive = false;
+				alert("Game Over!! \n Score :"+s);
+				console.log("collision!");
+			}
+		};
+
 		if(head.x<0)
 		{
-			newHead.x = 90;
-
-
-			//snakeArray=[];
-			
-				snakeArray.pop();
-
-				snakeArray.push({x:newHead.x-10,y:newHead.y});	
-						
-				//newSnakeArray.push({x:})
-				
-				//console.log(i);	
-			
-
+			newHead.x = 79;
+			snakeArray.push({x:newHead.x-1,y:newHead.y});	
 		}
-
 		else
-		{
-
 			snakeArray.push({x:head.x-1,y:head.y});
-
-		}
 	}
+	
 	else if(currentDirection == "up")
 	{
+		for (var i = 0; i < tempArray.length; i++) 
+		{	
+			if(head.y-1 == tempArray[i].y && head.x == tempArray[i].x)
+			{
+				isGameLive = false;
+				alert("Game Over!! \n Score :"+s);
+				console.log("collision!");
+			}
+		};
+
 		if(head.y<0)
 		{
 			newHead.y=40;
-			snakeArray.pop();
-			snakeArray.push({x:newHead.x,y:newHead.y-10});
+			snakeArray.push({x:newHead.x,y:newHead.y-1});
 		}		
 		else
 			snakeArray.push({x:head.x,y:head.y-1});
+
 	}
+	
 	else if (currentDirection == "down")
 	{
-		
-		if(head.y>40)
+		for (var i = 0; i < tempArray.length; i++) 
+		{	
+			if(head.y+1 == tempArray[i].y && head.x == tempArray[i].x)
+			{
+				isGameLive = false;
+				alert("Game Over!! \n Score :"+s);
+				console.log("collision!");
+			}
+		};
+
+		if(head.y>39)
 		{
 			newHead.y=0;
-			snakeArray.pop();
-			snakeArray.push({x:newHead.x,y:newHead.y+10});
+			snakeArray.push({x:newHead.x,y:newHead.y+1});
 		}		
 		else
-		snakeArray.push({x:head.x,y:head.y+1});
+			snakeArray.push({x:head.x,y:head.y+1});
 	}
 
-	if(!eatFood(snakeArray))
+	if(!eatFood())
 	{
 		snakeArray.splice(0,1);	
 	}
@@ -169,47 +187,39 @@ function makeNextMove()
 		return s;
 	}
 	
-}
+	}
 
 document.onkeypress = function (event)
 {
-	if (event.charCode == '97')
+	if (event.charCode == '97' && currentDirection != "right")
 	{
 		currentDirection = "left";
 	}
-	else if (event.charCode=='100')
+	else if (event.charCode=='100' && currentDirection != "left")
 	{
 		currentDirection="right";
 	}
-	else if (event.charCode=='115')
+	else if (event.charCode=='115' && currentDirection != "up")
 	{
 		currentDirection="down";
 	}
-	else if (event.charCode=='119')
+	else if (event.charCode=='119' && currentDirection != "down")
 	{
 		currentDirection="up";
 	}
-	else if(event.charCode=='112')	// p for pause
-	{
-		isGameLive=!isGameLive;
+	else if(event.charCode=='112')	// p
+	{																
+		isGameLive=!isGameLive;				// pause
 	}
 }
-
 
 function newFoodCoordinates()
 {
-	var x=(Math.random()*cvHeight/2)+1;
-	var y=(Math.random()*cvWidth/2)	+1;
-
-	var roundTo10=function(number)
-	{
-		return Math.round(number/10)*10;
-	}
-
-	return {x:roundTo10(x),y:roundTo10(y)};
+	var x1=Math.floor(((Math.random()*790)+0)/10)*10;
+	var y1=Math.floor(((Math.random()*390)+0)/10)*10;
+	
+	return {x:x1,y:y1};
 }
-
-
 
 function renderFood()
 {
@@ -219,8 +229,7 @@ function renderFood()
 	ctx.fillRect(x,y,cw,cw);	
 }
 
-
-function eatFood(snakeArray)
+function eatFood()
 {
 	var head = snakeHead(snakeArray);
 
@@ -230,10 +239,9 @@ function eatFood(snakeArray)
 	if(x*cw ==food.x && y*cw==food.y)
 	{
 		return true;
-
 	}
-	else 
-		return false;
+	else
+ 		return false;
 }
 
 
@@ -244,7 +252,7 @@ function scoreCard()
 	
 	ctx.fillStyle = "black";
 	ctx.font="14px Arial";
-	ctx.fillText("Score :" + s,10,395);
+	ctx.fillText("Score :" + s + "w:top a:left s:down d:right",10,395);
 
 }
 
