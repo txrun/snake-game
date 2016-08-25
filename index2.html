@@ -73,60 +73,13 @@ function makeNextMove() {
     detectCollision(currentDirection, tempArray, head);
 
     if (currentDirection == "right") {
-
-        if (head.x > 79) {
-            newHead.x = 0;
-            snakeArray.push({
-                x: newHead.x + 1,
-                y: newHead.y
-            });
-        } else {
-            snakeArray.push({
-                x: head.x + 1,
-                y: head.y
-            });
-        }
-
+        moveRight(head, newHead);
     } else if (currentDirection == "left") {
-        
-        if (head.x < 0) {
-            newHead.x = 79;
-            snakeArray.push({
-                x: newHead.x - 1,
-                y: newHead.y
-            });
-        } else
-            snakeArray.push({
-                x: head.x - 1,
-                y: head.y
-            });
+        moveLeft(head, newHead);    
     } else if (currentDirection == "up") {
-        
-        if (head.y < 0) {
-            newHead.y = 40;
-            snakeArray.push({
-                x: newHead.x,
-                y: newHead.y - 1
-            });
-        } else
-            snakeArray.push({
-                x: head.x,
-                y: head.y - 1
-            });
-
+        moveUp(head, newHead);
     } else if (currentDirection == "down") {
-        
-        if (head.y > 39) {
-            newHead.y = 0;
-            snakeArray.push({
-                x: newHead.x,
-                y: newHead.y + 1
-            });
-        } else
-            snakeArray.push({
-                x: head.x,
-                y: head.y + 1
-            });
+        moveDown(head, newHead);
     }
 
     if (!eatFood()) {
@@ -152,6 +105,63 @@ document.onkeypress = function(event) {
         isGameLive = !isGameLive; // pause
     }
 };
+
+function moveRight(head, newHead) {
+    if (head.x > 79) {
+        newHead.x = 0;
+        snakeArray.push({
+            x: newHead.x + 1,
+            y: newHead.y
+        });
+    } else {
+        snakeArray.push({
+            x: head.x + 1,
+            y: head.y
+        });
+    }
+}
+
+function moveLeft(head, newHead) {
+    if (head.x < 0) {
+        newHead.x = 79;
+        snakeArray.push({
+            x: newHead.x - 1,
+            y: newHead.y
+        });
+    } else
+    snakeArray.push({
+        x: head.x - 1,
+        y: head.y
+    });    
+}
+
+function moveUp(head, newHead) {
+    if (head.y < 0) {
+        newHead.y = 40;
+        snakeArray.push({
+            x: newHead.x,
+            y: newHead.y - 1
+        });
+    } else
+    snakeArray.push({
+        x: head.x,
+        y: head.y - 1
+    });
+}
+
+function moveDown(head, newHead) {
+    if (head.y > 39) {
+        newHead.y = 0;
+        snakeArray.push({
+            x: newHead.x,
+            y: newHead.y + 1
+        });
+    } else
+    snakeArray.push({
+        x: head.x,
+        y: head.y + 1
+    });
+}
 
 function detectCollision(currentDirection, tempArray, head) {
     if (currentDirection == "right")
