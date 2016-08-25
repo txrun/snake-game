@@ -1,280 +1,244 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title></title>
-</head>
-<body>
-	<canvas id ="myCanvas" width="800" height="400" style="border:1px solid #111; border-radius:5px"></canvas>	
-</body>
-
-<script type="text/javascript">
-	
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <canvas id ="myCanvas" width="800" height="400" style="border:1px solid #111; border-radius:5px"></canvas>
+  </body>
+  <script type="text/javascript">
 
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
-var cvHeight=400;
-var cvWidth=800;
-var cw=10;
+var cvHeight = 400;
+var cvWidth = 800;
+var cw = 10;
 
-var currentDirection="right";
-var snakeArray=initialSnakeCoordinates();
+var currentDirection = "right";
+var snakeArray = initialSnakeCoordinates();
 var food = newFoodCoordinates();
-
 var s = makeNextMove();
 
-var isGameLive=true;
-
+var isGameLive = true;
 
 // first create a snake of length 5 for start of the game
-    
-function initialSnakeCoordinates()
-{
-	var initLength = 5;
-	var pos = [];
-	for(var i=0;i<initLength;i++)
-	{
-		pos.push({x:i,y:0});
-	}
-	return pos;
+function initialSnakeCoordinates() {
+    var initLength = 5;
+    var pos = [];
+    for (var i = 0; i < initLength; i++) {
+        pos.push({
+            x: i,
+            y: 0
+        });
+    }
+    return pos;
 }
 
 
 // paint each cell of the snake
 
-function paintCell(x,y)
-{
-	ctx.fillStyle="blue";
-	ctx.fillRect(x*cw,y*cw,cw,cw);
-	ctx.strokeStyle="white";
-	ctx.strokeRect(x*cw,y*cw,cw,cw);
-
+function paintCell(x, y) {
+    ctx.fillStyle = "blue";
+    ctx.fillRect(x * cw, y * cw, cw, cw);
+    ctx.strokeStyle = "white";
+    ctx.strokeRect(x * cw, y * cw, cw, cw);
 }
 
-
-
-function drawSnake()
-{
-	for (var i=snakeArray.length -1;i>=0;i--)
-	{		
-		paintCell(snakeArray[i].x,snakeArray[i].y)
-	}
+function drawSnake() {
+    for (var i = snakeArray.length - 1; i >= 0; i--) {
+        paintCell(snakeArray[i].x, snakeArray[i].y)
+    }
 }
 
-
-function renderSnake()
-{
-	ctx.clearRect(0,0,canvas.width,canvas.height);
-	drawSnake();
+function renderSnake() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawSnake();
 }
 
-
-function snakeHead(snakeArray)
-{
-	var headPos = snakeArray.length - 1;
-	return snakeArray[headPos];
+function snakeHead(snakeArray) {
+    var headPos = snakeArray.length - 1;
+    return snakeArray[headPos];
 }
 
+var s = 0;
 
-var s=0;
+function makeNextMove() {
+    var head = snakeHead(snakeArray);
+    var newHead = snakeHead(snakeArray);
 
-function makeNextMove()
-{
-	var head = snakeHead(snakeArray);
-	var newHead = snakeHead(snakeArray);
+    var currentLength = snakeArray.length;
+    var tempArray = snakeArray;
 
-	var currentLength = snakeArray.length;
-	var tempArray = snakeArray;
+    detectCollision(currentDirection, tempArray, head);
 
+    if (currentDirection == "right") {
 
-	if(currentDirection == "right")
-	{
-		for (var i = 0; i < tempArray.length; i++) 
-		{	
-			if(head.x+1 == tempArray[i].x && head.y == tempArray[i].y)
-			{
-				isGameLive = false;
-				alert("Game Over!! \n Score :"+s);
-				console.log("collision!");
-			}
-		};
-	
-		
-		if(head.x>79)
-		{
-			newHead.x=0;
-			snakeArray.push({x:newHead.x+1,y:newHead.y});
-		}		
-		else
-			{
-				snakeArray.push({x: head.x + 1,y: head.y});
-			}
-			
-	}
+        if (head.x > 79) {
+            newHead.x = 0;
+            snakeArray.push({
+                x: newHead.x + 1,
+                y: newHead.y
+            });
+        } else {
+            snakeArray.push({
+                x: head.x + 1,
+                y: head.y
+            });
+        }
 
-	else if(currentDirection == "left")
-	{	
-		for (var i = 0; i < tempArray.length; i++) 
-		{	
-			if(head.x-1 == tempArray[i].x && head.y == tempArray[i].y)
-			{
-				isGameLive = false;
-				alert("Game Over!! \n Score :"+s);
-				console.log("collision!");
-			}
-		};
+    } else if (currentDirection == "left") {
+        
+        if (head.x < 0) {
+            newHead.x = 79;
+            snakeArray.push({
+                x: newHead.x - 1,
+                y: newHead.y
+            });
+        } else
+            snakeArray.push({
+                x: head.x - 1,
+                y: head.y
+            });
+    } else if (currentDirection == "up") {
+        
+        if (head.y < 0) {
+            newHead.y = 40;
+            snakeArray.push({
+                x: newHead.x,
+                y: newHead.y - 1
+            });
+        } else
+            snakeArray.push({
+                x: head.x,
+                y: head.y - 1
+            });
 
-		if(head.x<0)
-		{
-			newHead.x = 79;
-			snakeArray.push({x:newHead.x-1,y:newHead.y});	
-		}
-		else
-			snakeArray.push({x:head.x-1,y:head.y});
-	}
-	
-	else if(currentDirection == "up")
-	{
-		for (var i = 0; i < tempArray.length; i++) 
-		{	
-			if(head.y-1 == tempArray[i].y && head.x == tempArray[i].x)
-			{
-				isGameLive = false;
-				alert("Game Over!! \n Score :"+s);
-				console.log("collision!");
-			}
-		};
+    } else if (currentDirection == "down") {
+        
+        if (head.y > 39) {
+            newHead.y = 0;
+            snakeArray.push({
+                x: newHead.x,
+                y: newHead.y + 1
+            });
+        } else
+            snakeArray.push({
+                x: head.x,
+                y: head.y + 1
+            });
+    }
 
-		if(head.y<0)
-		{
-			newHead.y=40;
-			snakeArray.push({x:newHead.x,y:newHead.y-1});
-		}		
-		else
-			snakeArray.push({x:head.x,y:head.y-1});
-
-	}
-	
-	else if (currentDirection == "down")
-	{
-		for (var i = 0; i < tempArray.length; i++) 
-		{	
-			if(head.y+1 == tempArray[i].y && head.x == tempArray[i].x)
-			{
-				isGameLive = false;
-				alert("Game Over!! \n Score :"+s);
-				console.log("collision!");
-			}
-		};
-
-		if(head.y>39)
-		{
-			newHead.y=0;
-			snakeArray.push({x:newHead.x,y:newHead.y+1});
-		}		
-		else
-			snakeArray.push({x:head.x,y:head.y+1});
-	}
-
-	if(!eatFood())
-	{
-		snakeArray.splice(0,1);	
-	}
-	else
-	{
-		food = newFoodCoordinates();
-		s=s+1;
-		return s;
-	}
-	
-	}
-
-document.onkeypress = function (event)
-{
-	if (event.charCode == '97' && currentDirection != "right")
-	{
-		currentDirection = "left";
-	}
-	else if (event.charCode=='100' && currentDirection != "left")
-	{
-		currentDirection="right";
-	}
-	else if (event.charCode=='115' && currentDirection != "up")
-	{
-		currentDirection="down";
-	}
-	else if (event.charCode=='119' && currentDirection != "down")
-	{
-		currentDirection="up";
-	}
-	else if(event.charCode=='112')	// p
-	{																
-		isGameLive=!isGameLive;				// pause
-	}
+    if (!eatFood()) {
+        snakeArray.splice(0, 1);
+    } else {
+        food = newFoodCoordinates();
+        s = s + 1;
+        return s;
+    }
 }
 
-function newFoodCoordinates()
-{
-	var x1=Math.floor(((Math.random()*790)+0)/10)*10;
-	var y1=Math.floor(((Math.random()*390)+0)/10)*10;
-	
-	return {x:x1,y:y1};
+document.onkeypress = function(event) {
+    if (event.charCode == '97' && currentDirection != "right") {
+        currentDirection = "left";
+    } else if (event.charCode == '100' && currentDirection != "left") {
+        currentDirection = "right";
+    } else if (event.charCode == '115' && currentDirection != "up") {
+        currentDirection = "down";
+    } else if (event.charCode == '119' && currentDirection != "down") {
+        currentDirection = "up";
+    } else if (event.charCode == '112') // p
+    {
+        isGameLive = !isGameLive; // pause
+    }
+};
+
+function detectCollision(currentDirection, tempArray, head) {
+    if (currentDirection == "right")
+    {
+        for (var i = 0; i < tempArray.length; i++) {
+            if (head.x + 1 == tempArray[i].x && head.y == tempArray[i].y) {
+                isGameLive = false;
+                alert("Game Over!! \n Score :" + s);
+                console.log("collision!");
+            }
+        }
+    }
+    else if (currentDirection == "left") {
+        for (var i = 0; i < tempArray.length; i++) {
+            if (head.x - 1 == tempArray[i].x && head.y == tempArray[i].y) {
+                isGameLive = false;
+                alert("Game Over!! \n Score :" + s);
+                console.log("collision!");
+            }
+        }
+    }
+    else if (currentDirection == "up") {
+        for (var i = 0; i < tempArray.length; i++) {
+            if (head.y - 1 == tempArray[i].y && head.x == tempArray[i].x) {
+                isGameLive = false;
+                alert("Game Over!! \n Score :" + s);
+                console.log("collision!");
+            }
+        }
+    }
+    else if (currentDirection == "down") {
+        for (var i = 0; i < tempArray.length; i++) {
+            if (head.y + 1 == tempArray[i].y && head.x == tempArray[i].x) {
+                isGameLive = false;
+                alert("Game Over!! \n Score :" + s);
+                console.log("collision!");
+            }
+        }
+    }
 }
 
-function renderFood()
-{
-	var x =food.x;
-	var y =food.y;
-	ctx.fillStyle = "red";
-	ctx.fillRect(x,y,cw,cw);	
+function newFoodCoordinates() {
+    var x1 = Math.floor(((Math.random() * 790) + 0) / 10) * 10;
+    var y1 = Math.floor(((Math.random() * 390) + 0) / 10) * 10;
+
+    return {
+        x: x1,
+        y: y1
+    };
 }
 
-function eatFood()
-{
-	var head = snakeHead(snakeArray);
-
-	var x=head.x;
-	var y=head.y;
-
-	if(x*cw ==food.x && y*cw==food.y)
-	{
-		return true;
-	}
-	else
- 		return false;
+function renderFood() {
+    var x = food.x;
+    var y = food.y;
+    ctx.fillStyle = "red";
+    ctx.fillRect(x, y, cw, cw);
 }
 
+function eatFood() {
+    var head = snakeHead(snakeArray);
 
+    var x = head.x;
+    var y = head.y;
 
-
-function scoreCard()
-{
-	
-	ctx.fillStyle = "black";
-	ctx.font="14px Arial";
-	ctx.fillText("Score :" + s + "w:top a:left s:down d:right",10,395);
-
+    if (x * cw == food.x && y * cw == food.y) {
+        return true;
+    } else
+        return false;
 }
 
-
-
-function gameLoop()
-{
-	if(isGameLive)
-	{
-		renderSnake();
-		makeNextMove();
-		renderFood();
-		scoreCard();
-
-	}
+function scoreCard() {
+    ctx.fillStyle = "black";
+    ctx.font = "14px Arial";
+    ctx.fillText("Score :" + s + "w:top a:left s:down d:right", 10, 395);
 }
 
+function gameLoop() {
+    if (isGameLive) {
+        renderSnake();
+        makeNextMove();
+        renderFood();
+        scoreCard();
+    }
+}
 
-
-setInterval(gameLoop,150);
-
+setInterval(gameLoop, 150);
 
 </script>
 
-</html>
+</html> 
